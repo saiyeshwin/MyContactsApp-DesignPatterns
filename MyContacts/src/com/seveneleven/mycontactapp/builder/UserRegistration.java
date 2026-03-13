@@ -1,6 +1,7 @@
 package com.seveneleven.mycontactapp.builder;
 
 import com.seveneleven.mycontactapp.factory.UserFactory;
+import com.seveneleven.mycontactapp.security.PasswordUtil;
 import com.seveneleven.mycontactapp.user.User;
 import com.seveneleven.mycontactapp.validation.Validator;
 
@@ -17,7 +18,7 @@ public class UserRegistration {
                 .setName(name)
                 .setEmail(email)
                 .setUserType(userType)
-                .setPasswordHash(password)
+                .setPasswordHash(PasswordUtil.hash(password))
                 .build();
         return UserFactory.createUser(user);
     }
