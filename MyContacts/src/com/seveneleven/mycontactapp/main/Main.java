@@ -1,5 +1,5 @@
-// UC-10:Advanced Filtering
-// Allow logged-in users to apply multiple filters
+// UC-11:Create and Manage Tags
+// Allow logged-in users to create and manage tags
 // @author Developer
 // @version 10.0
 package com.seveneleven.mycontactapp.main;
