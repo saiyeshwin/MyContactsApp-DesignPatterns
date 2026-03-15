@@ -12,6 +12,7 @@ import com.seveneleven.mycontactapp.factory.*;
 import com.seveneleven.mycontactapp.filter.*;
 import com.seveneleven.mycontactapp.profile.*;
 import com.seveneleven.mycontactapp.search.*;
+import com.seveneleven.mycontactapp.tag.*;
 import com.seveneleven.mycontactapp.user.User;
 import com.seveneleven.mycontactapp.observer.*;
 import com.seveneleven.mycontactapp.bulk.*;
@@ -72,7 +73,10 @@ public class Main {
                 System.out.println("7 Delete Contact");
                 System.out.println("8 Bulk Delete Contacts");
                 System.out.println("9 Bulk Export Contacts");
-                System.out.println("10 Exit");
+                System.out.println("10 Search Contact");
+                System.out.println("11 Filter Contact");
+                System.out.println("12 Create Tag");
+                System.out.println("13 Exit");
                 System.out.print("Choose option: ");
                 int option = Integer.parseInt(sc.nextLine());
                 ProfileManager profileManager = new ProfileManager();
@@ -266,7 +270,25 @@ public class Main {
                                    System.out.println(display.display());
                                });
                     }
-                    case 12 -> {
+                    case 12-> {
+                        if(manager.getContacts().isEmpty()){
+                            System.out.println("No contacts available.");
+                            break;
+                        }
+                        System.out.print("Enter tag name: ");
+                        String tagName = sc.nextLine();
+                        Tag tag = TagFactory.getTag(tagName);
+                        System.out.println("Choose contact:");
+                        for(int i=0;i<manager.getContacts().size();i++){
+                            System.out.println(i + " : " +
+                                    manager.getContacts().get(i).getName());
+                        }
+                        int index = Integer.parseInt(sc.nextLine());
+                        Contact contact = manager.getContacts().get(index);
+                        contact.addTag(tag);
+                        System.out.println("Tag added successfully.");
+                    }
+                    case 13 -> {
                         running = false;
                         System.out.println("Exiting");
                     }

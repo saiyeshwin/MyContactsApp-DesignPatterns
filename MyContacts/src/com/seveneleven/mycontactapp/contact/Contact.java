@@ -1,12 +1,15 @@
 package com.seveneleven.mycontactapp.contact;
 import java.time.LocalDateTime;
 import java.util.*;
+
+import com.seveneleven.mycontactapp.tag.Tag;
 public abstract class Contact {
 	private UUID id;
 	private String name;
 	private List<PhoneNumber> phones;
 	private List<EmailAddress> emails;
 	private LocalDateTime createdAt;
+	private Set<Tag> tags = new HashSet<>();
 	public Contact(String name,List<PhoneNumber> phones,List<EmailAddress> emails) {
 		this.id = UUID.randomUUID();
 		this.name = name;
@@ -41,6 +44,13 @@ public abstract class Contact {
 		for (EmailAddress e : emails) {
 			sb.append("- ").append(e.getEmail()).append("\n");
 		}
+		sb.append("Tags: ");
+
+		for(Tag t : tags){
+		    sb.append(t.getName()).append(" ");
+		}
+
+		sb.append("\n");
 		return sb.toString();
 	}
 	public ContactMemento save() {
@@ -54,6 +64,16 @@ public abstract class Contact {
 	}
 	public void setName(String name) {
 		this.name=name;
-		
+	}
+	public void addTag(Tag tag) {
+	    tags.add(tag);
+	}
+
+	public void removeTag(Tag tag) {
+	    tags.remove(tag);
+	}
+
+	public Set<Tag> getTags() {
+	    return tags;
 	}
 }
