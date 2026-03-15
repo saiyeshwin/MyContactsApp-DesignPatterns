@@ -1,7 +1,7 @@
-// UC-08: Bulk Operations (Composite Pattern)
-// Allow logged-in users to perform operations on multiple contacts simultaneously
+// UC-09:Search Contacts
+// Allow logged-in users to search contacts by name, phone number, email address
 // @author Developer
-// @version 8.0
+// @version 9.0
 package com.seveneleven.mycontactapp.main;
 import java.util.Scanner;
 import com.seveneleven.mycontactapp.auth.*;
@@ -10,6 +10,7 @@ import com.seveneleven.mycontactapp.contact.*;
 import com.seveneleven.mycontactapp.decorator.*;
 import com.seveneleven.mycontactapp.factory.*;
 import com.seveneleven.mycontactapp.profile.*;
+import com.seveneleven.mycontactapp.search.*;
 import com.seveneleven.mycontactapp.user.User;
 import com.seveneleven.mycontactapp.observer.*;
 import com.seveneleven.mycontactapp.bulk.*;
@@ -70,7 +71,8 @@ public class Main {
                 System.out.println("7 Delete Contact");
                 System.out.println("8 Bulk Delete Contacts");
                 System.out.println("9 Bulk Export Contacts");
-                System.out.println("10 Exit");
+                System.out.println("10 Search Contacts");
+                System.out.println("11 Exit");
                 System.out.print("Choose option: ");
                 int option = Integer.parseInt(sc.nextLine());
                 ProfileManager profileManager = new ProfileManager();
@@ -148,7 +150,6 @@ public class Main {
                         int index = Integer.parseInt(sc.nextLine());
                         manager.deleteContact(index);
                     }
-
                     case 8 -> {
                         System.out.println("Enter indexes to delete (space separated):");
                         for (int i = 0; i < manager.getContacts().size(); i++) {
@@ -172,6 +173,48 @@ public class Main {
                         group.export();
                     }
                     case 10 -> {
+                        if(manager.getContacts().isEmpty()) {
+                            System.out.println("No contacts available.");
+                            break;
+                        }
+                        System.out.println("Search by:");
+                        System.out.println("1 Name");
+                        System.out.println("2 Phone");
+                        System.out.println("3 Email");
+                        int choice = Integer.parseInt(sc.nextLine());
+                        SearchHandler handler = new SearchHandler();
+                        switch(choice) {
+                            case 1 -> {
+                                System.out.print("Enter name keyword: ");
+                                handler.addCriteria(new NameCriteria(sc.nextLine()));
+                            }
+                            case 2 -> {
+                                System.out.print("Enter phone keyword: ");
+                                handler.addCriteria(new PhoneCriteria(sc.nextLine()));
+                            }
+                            case 3 -> {
+                                System.out.print("Enter email keyword: ");
+                                handler.addCriteria(new EmailCriteria(sc.nextLine()));
+                            }
+                            default -> {
+                                System.out.println("Invalid choice.");
+                                break;
+                            }
+                        }
+                        var results = handler.filter(manager.getContacts());
+                        if(results.isEmpty()) {
+                            System.out.println("No matching contacts found.");
+                        }
+                        else {
+                            for(Contact c : results) {
+                                ContactDisplay display =
+                                        new PrettyFormatDecorator(
+                                                new BasicContactDisplay(c));
+                                System.out.println(display.display());
+                            }
+                        }
+                    }
+                    case 11 -> {
                         running = false;
                         System.out.println("Exiting");
                     }
