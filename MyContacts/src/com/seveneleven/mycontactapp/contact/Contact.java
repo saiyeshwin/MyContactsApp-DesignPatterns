@@ -43,4 +43,17 @@ public abstract class Contact {
 		}
 		return sb.toString();
 	}
+	public ContactMemento save() {
+	    return new ContactMemento(name, phones, emails);
+	}
+
+	public void restore(ContactMemento memento) {
+	    this.name = memento.getName();
+	    this.phones = memento.getPhones();
+	    this.emails = memento.getEmails();
+	}
+	public void setName(String name) {
+		this.name=name;
+		
+	}
 }
