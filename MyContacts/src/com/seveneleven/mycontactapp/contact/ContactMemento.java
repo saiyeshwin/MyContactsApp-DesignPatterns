@@ -5,18 +5,12 @@ public class ContactMemento {
     private String name;
     private List<PhoneNumber> phones;
     private List<EmailAddress> emails;
-    public ContactMemento(String name, List<PhoneNumber> phones, List<EmailAddress> emails) {
+    public ContactMemento(String name,List<PhoneNumber> phones,List<EmailAddress> emails) {
         this.name = name;
-        this.phones = new ArrayList<>(phones);
-        this.emails = new ArrayList<>(emails);
+        this.phones = phones;
+        this.emails = emails;
     }
-    public String getName() {
-        return name;
-    }
-    public List<PhoneNumber> getPhones() {
-        return phones;
-    }
-    public List<EmailAddress> getEmails() {
-        return emails;
-    }
+    public String getName() { return name; }
+    public List<PhoneNumber> getPhones() { return phones; }
+    public List<EmailAddress> getEmails() { return emails; }
 }
