@@ -1,7 +1,7 @@
-// UC-09:Search Contacts
-// Allow logged-in users to search contacts by name, phone number, email address
+// UC-10:Advanced Filtering
+// Allow logged-in users to apply multiple filters
 // @author Developer
-// @version 9.0
+// @version 10.0
 package com.seveneleven.mycontactapp.main;
 import java.util.Scanner;
 import com.seveneleven.mycontactapp.auth.*;
@@ -9,6 +9,7 @@ import com.seveneleven.mycontactapp.builder.*;
 import com.seveneleven.mycontactapp.contact.*;
 import com.seveneleven.mycontactapp.decorator.*;
 import com.seveneleven.mycontactapp.factory.*;
+import com.seveneleven.mycontactapp.filter.*;
 import com.seveneleven.mycontactapp.profile.*;
 import com.seveneleven.mycontactapp.search.*;
 import com.seveneleven.mycontactapp.user.User;
@@ -71,8 +72,7 @@ public class Main {
                 System.out.println("7 Delete Contact");
                 System.out.println("8 Bulk Delete Contacts");
                 System.out.println("9 Bulk Export Contacts");
-                System.out.println("10 Search Contacts");
-                System.out.println("11 Exit");
+                System.out.println("10 Exit");
                 System.out.print("Choose option: ");
                 int option = Integer.parseInt(sc.nextLine());
                 ProfileManager profileManager = new ProfileManager();
@@ -215,6 +215,58 @@ public class Main {
                         }
                     }
                     case 11 -> {
+                        if (manager.getContacts().isEmpty()) {
+                            System.out.println("No contacts available.");
+                            break;
+                        }
+                        System.out.println("\nAdvanced Filtering");
+                        System.out.println("Choose filter combination:");
+                        System.out.println("1 AND");
+                        System.out.println("2 OR");
+                        int strategyChoice = Integer.parseInt(sc.nextLine());
+                        CompositeFilter composite;
+                        if (strategyChoice == 1) {
+                            composite = new CompositeFilter(new AndFilterStrategy());
+                        } 
+                        else {
+                            composite = new CompositeFilter(new OrFilterStrategy());
+                        }
+                        boolean addingFilters = true;
+                        while (addingFilters) {
+                            System.out.println("\nAdd Filter:");
+                            System.out.println("1 Filter by Tag");
+                            System.out.println("2 Filter by Date Added");
+                            System.out.println("3 Done");
+                            int filterChoice = Integer.parseInt(sc.nextLine());
+                            switch (filterChoice) {
+                                case 1 -> {
+                                    System.out.print("Enter tag keyword: ");
+                                    String tag = sc.nextLine();
+                                    composite.addFilter(new TagFilter(tag));
+                                }
+                                case 2 -> {
+                                    System.out.print("Enter number of days ago: ");
+                                    int days = Integer.parseInt(sc.nextLine());
+                                    composite.addFilter(
+                                            new DateAddedFilter(
+                                                    java.time.LocalDateTime.now().minusDays(days)
+                                            )
+                                    );
+                                }
+                                case 3 -> addingFilters = false;
+                                default -> System.out.println("Invalid choice.");
+                            }
+                        }
+                        System.out.println("\nFiltered Contacts:");
+                        manager.getContacts()
+                               .stream()
+                               .filter(composite::apply)
+                               .forEach(contact -> {
+                                   ContactDisplay display =new PrettyFormatDecorator(new BasicContactDisplay(contact));
+                                   System.out.println(display.display());
+                               });
+                    }
+                    case 12 -> {
                         running = false;
                         System.out.println("Exiting");
                     }
