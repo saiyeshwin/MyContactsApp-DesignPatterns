@@ -1,7 +1,7 @@
 package com.seveneleven.mycontactapp.contact;
 import java.time.LocalDateTime;
 import java.util.*;
-
+import com.seveneleven.mycontactapp.contact.*;
 import com.seveneleven.mycontactapp.tag.Tag;
 public abstract class Contact {
 	private UUID id;

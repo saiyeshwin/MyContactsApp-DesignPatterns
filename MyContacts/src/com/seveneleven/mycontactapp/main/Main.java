@@ -1,9 +1,11 @@
-// UC-10:Advanced Filtering
-// Allow logged-in users to apply multiple filters
+// UC-12:Apply Tags to Contacts
+// Allow users to assign one or multiple tags to contacts 
 // @author Developer
-// @version 10.0
+// @version 12.0
 package com.seveneleven.mycontactapp.main;
 import java.util.Scanner;
+
+import com.seveneleven.mycontactapp.association.ContactTagManager;
 import com.seveneleven.mycontactapp.auth.*;
 import com.seveneleven.mycontactapp.builder.*;
 import com.seveneleven.mycontactapp.contact.*;
@@ -76,10 +78,14 @@ public class Main {
                 System.out.println("10 Search Contact");
                 System.out.println("11 Filter Contact");
                 System.out.println("12 Create Tag");
-                System.out.println("13 Exit");
+                System.out.println("13 Apply Tags");
+                System.out.println("14 Remove Tags");
+                System.out.println("15 Exit");
                 System.out.print("Choose option: ");
                 int option = Integer.parseInt(sc.nextLine());
                 ProfileManager profileManager = new ProfileManager();
+                ContactTagManager tagManager = new ContactTagManager();
+                tagManager.addObserver(new TagChangeLogger());
                 Command command;
                 switch (option) {
                     case 1 -> {
@@ -289,6 +295,38 @@ public class Main {
                         System.out.println("Tag added successfully.");
                     }
                     case 13 -> {
+                        if(manager.getContacts().isEmpty()){
+                            System.out.println("No contacts available.");
+                            break;
+                        }
+                        System.out.println("Choose contact:");
+                        for(int i=0;i<manager.getContacts().size();i++){
+                            System.out.println(i + " : " +
+                                    manager.getContacts().get(i).getName());
+                        }
+                        int index = Integer.parseInt(sc.nextLine());
+                        Contact contact = manager.getContacts().get(index);
+                        System.out.print("Enter tag name: ");
+                        String tagName = sc.nextLine();
+                        Tag tag = TagFactory.getTag(tagName);
+                        tagManager.addTag(contact, tag);
+                    }
+                    case 14 -> {
+                        System.out.println("Choose contact:");
+                        for(int i=0;i<manager.getContacts().size();i++){
+                            System.out.println(i + " : " +
+                                    manager.getContacts().get(i).getName());
+                        }
+                        int index = Integer.parseInt(sc.nextLine());
+                        Contact contact = manager.getContacts().get(index);
+                        System.out.print("Enter tag to remove: ");
+                        String tagName = sc.nextLine();
+
+                        Tag tag = TagFactory.getTag(tagName);
+
+                        tagManager.removeTag(contact, tag);
+                    }
+                    case 15 -> {
                         running = false;
                         System.out.println("Exiting");
                     }
